@@ -1,5 +1,6 @@
 class Car{
     constructor(x,y,width,height){
+        //car gets x value of defined lanes center
         this.x=x;
         this.y=y;
         this.width=width;
@@ -11,11 +12,13 @@ class Car{
         this.friction=0.02;
         this.angle=0;
 
+        this.sensor = new Sensor(this);
         this.controls = new Controls();
     }
 
     update(){
         this.#move();    
+        this.sensor.update();
     }
 
     #move(){
@@ -63,6 +66,8 @@ class Car{
         //any shapes drawn afterwards will be rotate about this.angle
         ctx.rotate(-this.angle);
         //beginPath does asure that the new object is drawn as an independent shape
+
+        
         ctx.beginPath();
         ctx.rect(           
             - this.width/2,
@@ -72,7 +77,42 @@ class Car{
         )
         ctx.fill();
         
+        /*        
+        //some car styling ;)
+        ctx.beginPath();
+        ctx.rect(           
+            - this.width/4,
+            - this.height/6,
+            this.width/2,
+            this.height/2            
+        )
+        ctx.fillStyle = "darkred";
+        ctx.fill();        
+
+        ctx.beginPath();
+        ctx.rect(           
+            - this.width/2,
+            - this.height/2,
+            this.width/10,
+            this.height/10            
+        )
+        ctx.fillStyle = "orange";
+        ctx.fill();          
+        
+        ctx.beginPath();
+        ctx.rect(           
+            + this.width/2 - this.width/10,
+            - this.height/2,
+            this.width/10,
+            this.height/10            
+        )
+        ctx.fillStyle = "orange";
+        ctx.fill();      
+        */       
+
         ctx.restore();
+
+        this.sensor.draw(ctx);
     }
 }
  
