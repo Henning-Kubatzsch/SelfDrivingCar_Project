@@ -39,7 +39,7 @@ class Road{
             )
 
             ctx.setLineDash([20,20]);
-
+            
             ctx.strokeStyle = "white";
 
             ctx.beginPath();

@@ -11,6 +11,7 @@ class Car{
         this.maxSpeed=3;
         this.friction=0.02;
         this.angle=0;
+        this.damage=false;
 
         this.sensor = new Sensor(this);
         this.controls = new Controls();
@@ -18,7 +19,43 @@ class Car{
 
     update(roadBorders){
         this.#move();    
+        this.polygon=this.#createPolygon();
+        this.damaged=this.#assessDamage(roadBorders);
         this.sensor.update(roadBorders);
+    }
+
+    #assessDamage(roadBorder){
+        for(let i = 0; i < roadBorder.length; i++){
+            if(polysIntersect(this.polygon, roadBorder[i])){
+                return true;
+            }
+        }        
+        return false;
+    }
+
+    //when adding more points the geometry of the car gets more complex -> room for experiments
+    #createPolygon(){
+        const points=[];
+        // get rad using half hypothenus
+        const rad = Math.hypot(this.width, this.height)/2;
+        const alpha = Math.atan2(this.width, this.height);
+        points.push({
+            x : this.x-Math.sin(this.angle-alpha) * rad,
+            y : this.y-Math.cos(this.angle-alpha) * rad
+        });
+        points.push({
+            x : this.x-Math.sin(this.angle+alpha) * rad,
+            y : this.y-Math.cos(this.angle+alpha) * rad
+        });
+        points.push({
+            x : this.x-Math.sin(Math.PI + this.angle-alpha) * rad,
+            y : this.y-Math.cos(Math.PI + this.angle-alpha) * rad
+        });
+        points.push({
+            x : this.x-Math.sin(Math.PI + this.angle+alpha) * rad,
+            y : this.y-Math.cos(Math.PI + this.angle+alpha) * rad
+        });
+        return points;
     }
 
     #move(){
@@ -45,7 +82,6 @@ class Car{
         }
 
         if(this.speed!=0){
-        //if(false){
             const flip=this.speed>0?1:-1;
             if(this.controls.left){
                 this.angle+=0.03 * flip;
@@ -61,56 +97,19 @@ class Car{
     
 
     draw(ctx){
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        //any shapes drawn afterwards will be rotate about this.angle
-        ctx.rotate(-this.angle);
-        //beginPath does asure that the new object is drawn as an independent shape
 
-        
+        if(this.damaged){
+            ctx.fillStyle = "red";
+        }else{
+            ctx.fillStyle = "black";
+        }
+       
         ctx.beginPath();
-        ctx.rect(           
-            - this.width/2,
-            - this.height/2,
-            this.width,
-            this.height            
-        )
+        ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+        for(let i=1; i < this.polygon.length; i++){
+            ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
+        }
         ctx.fill();
-        
-        /*        
-        //some car styling ;)
-        ctx.beginPath();
-        ctx.rect(           
-            - this.width/4,
-            - this.height/6,
-            this.width/2,
-            this.height/2            
-        )
-        ctx.fillStyle = "darkred";
-        ctx.fill();        
-
-        ctx.beginPath();
-        ctx.rect(           
-            - this.width/2,
-            - this.height/2,
-            this.width/10,
-            this.height/10            
-        )
-        ctx.fillStyle = "orange";
-        ctx.fill();          
-        
-        ctx.beginPath();
-        ctx.rect(           
-            + this.width/2 - this.width/10,
-            - this.height/2,
-            this.width/10,
-            this.height/10            
-        )
-        ctx.fillStyle = "orange";
-        ctx.fill();      
-        */       
-
-        ctx.restore();
 
         this.sensor.draw(ctx);
     }
