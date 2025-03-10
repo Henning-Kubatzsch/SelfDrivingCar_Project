@@ -1,5 +1,5 @@
 class Car{
-    constructor(x,y,width,height){
+    constructor(x,y,width,height, controlType, maxSpeed=3){
         //car gets x value of defined lanes center
         this.x=x;
         this.y=y;
@@ -8,28 +8,64 @@ class Car{
 
         this.speed=0;
         this.acceleration=0.2;
-        this.maxSpeed=3;
+        this.maxSpeed=maxSpeed;
         this.friction=0.02;
         this.angle=0;
         this.damage=false;
 
-        this.sensor = new Sensor(this);
-        this.controls = new Controls();
+        this.useBrain = controlType=="AI";
+
+        if(controlType != "DUMMY"){
+            this.sensor = new Sensor(this);       
+            this.brain = new NeuralNetwork(
+                [this.sensor.rayCount, 6, 4]
+            );
+        }
+        
+        this.controls = new Controls(controlType);
     }
 
-    update(roadBorders){
-        this.#move();    
-        this.polygon=this.#createPolygon();
-        this.damaged=this.#assessDamage(roadBorders);
-        this.sensor.update(roadBorders);
+    update(roadBorders, traffic){
+        if(!this.damaged){
+            this.#move();    
+            this.polygon=this.#createPolygon();
+            this.damaged=this.#assessDamage(roadBorders, traffic);
+        }    
+
+        //console.log("in car update, sensor: " + this.sensor);
+
+        if(this.sensor){
+            this.sensor.update(roadBorders, traffic);
+            // mapping -> get low values when the object is far away/ high values as one, when the object is close
+            // according to lasers/sensor the closer the object, the higher the lights intensity bouncing back from the surface
+            const offsets = this.sensor.readings.map(
+                s => s == null? 0 : 1-s.offset
+            )
+            const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+
+            if(this.useBrain){
+                
+                this.controls.forward = outputs[0];
+                this.controls.left = outputs[1];
+                this.controls.right = outputs[2];
+                this.controls.reverse = outputs[3];
+            }
+        }
+            
     }
 
-    #assessDamage(roadBorder){
+    #assessDamage(roadBorder, traffic){
+
         for(let i = 0; i < roadBorder.length; i++){
             if(polysIntersect(this.polygon, roadBorder[i])){
                 return true;
             }
         }        
+        for(let i = 0; i < traffic.length; i++){
+            if(polysIntersect(this.polygon, traffic[i].polygon)){
+                return true;
+            }
+        }      
         return false;
     }
 
@@ -93,25 +129,30 @@ class Car{
               
         this.x-=Math.sin(this.angle)*this.speed;
         this.y-=Math.cos(this.angle)*this.speed;
+
+        //console.log("sensor: " + this.sensor + " speed: " + this.speed);
     }
     
 
-    draw(ctx){
+    draw(ctx, color, drawSensor = false){
 
         if(this.damaged){
-            ctx.fillStyle = "red";
+            ctx.fillStyle = "gray";
         }else{
-            ctx.fillStyle = "black";
+            ctx.fillStyle = color;
         }
        
         ctx.beginPath();
         ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+
         for(let i=1; i < this.polygon.length; i++){
             ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
         }
         ctx.fill();
 
-        this.sensor.draw(ctx);
+        if(this.sensor && drawSensor){
+            this.sensor.draw(ctx);
+        }        
     }
 }
  
