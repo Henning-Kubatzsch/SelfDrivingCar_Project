@@ -1,102 +1,65 @@
 # Self-Driving Car Project 🚗🧠
 
-![Screenshot](images/screenshot_app.png)
-
-This is a simple yet insightful machine learning project built with **JavaScript**, simulating self-driving car behavior through evolutionary training.
-
-> **Inspired by:**  
-> [Self-Driving Car – Full Course by Rad Maricescu-Istodor](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY)
+A browser-based machine learning simulation demonstrating evolutionary neural networks for autonomous driving — built entirely in **JavaScript**.
 
 ---
 
-## 🧠 Project Overview
+## 💡 About This Project
 
-This project implements an **evolutionary neural network** approach to train self-driving cars to navigate a road without collisions. The training occurs entirely in the browser — no backend or training pipeline setup required.
+This project explores evolutionary training of neural networks to control self-driving cars navigating a road without collisions. Running fully in-browser, it requires no backend or setup, making it a lightweight and accessible demo of ML concepts in action.
 
-### 🚀 How to Run
-Just open the `index.html` file in your browser — no installation or server needed.
+Inspired by Rad Maricescu-Istodor’s excellent [Self-Driving Car course](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY), it combines raycasting sensors, genetic mutation, and live neural network visualization.
+
+---
+
+## 🚀 Getting Started
+
+Open `index.html` in your browser — no installation or server required. Watch the cars evolve and learn right on the page.
 
 ---
 
 ## 🔧 How It Works
 
-### 🧬 Evolutionary Algorithm
+### Evolutionary Neural Networks
 
-A population of `N = 1000` randomly initialized neural networks (MLPs) controls 1000 virtual cars. Each car is equipped with five distance sensors using **raycasting** and a **segment intersection** algorithm.
+* Population of 1000 cars, each controlled by a feedforward neural network.
+* Five raycast sensors feed distance inputs into the network.
+* The network outputs four control signals: accelerate, brake, steer left, and steer right.
 
-```js
-const N = 1000;
-````
+The car that travels the furthest without crashing is selected as the best performer for the next generation.
 
-These sensors feed input into the neural network, allowing each car to react to the road environment.
+### Save & Mutate
 
-### 🏆 Best Performer Selection
-
-At every simulation step, the car that has progressed the furthest (based on its `y` coordinate) is selected as the `bestCar`:
-
-```js
-bestCar = cars.find(
-    c => c.y === Math.min(...cars.map(c => c.y))
-);
-```
+You can save the top-performing neural network to `localStorage` with a click. On reload, one car keeps the saved network intact, while others receive mutated variations — enabling gradual performance improvement over generations.
 
 ---
 
-## 💾 Save & Mutate
+## 🧠 Neural Network Architecture
 
-By clicking the **💾 icon** in the middle of the canvas, you can save the neural network (called `bestBrain`) of the best-performing car.
-
-On the next page load:
-
-* One car retains the saved `bestBrain` unaltered.
-* The remaining `N - 1` cars receive slightly mutated versions of it:
-
-```js
-if (localStorage.getItem("bestBrain")) {
-    for (let i = 0; i < cars.length; i++) {
-        cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
-        if (i !== 0) {
-            NeuralNetwork.mutate(cars[i].brain, 0.1);
-        }
-    }
-}
-```
-
-Repeat this process as many times as you'd like — the network will gradually improve over iterations.
+* 5 input neurons (distance sensors)
+* 1 hidden layer with 6 neurons
+* 4 output neurons (control commands)
+* Live visualization of the network activations as it learns
 
 ---
 
-## 🧠 Features
+## ⚙️ Features
 
-* ✅ Pure JavaScript – no external ML libraries
-* ✅ Raycasting-based collision detection
-* ✅ Genetic-like mutation for evolutionary learning
-* ✅ Save and restore trained networks using `localStorage`
-* ✅ Works entirely in the browser
-* ✅ Neural network is visualized live as it learns
-
----
-
-## 🧩 Neural Network Architecture
-
-Each car is controlled by a **feedforward neural network** with the following structure:
-
-* **5 input neurons** – representing the distance values from the five raycast sensors
-* **1 hidden layer** – with **6 neurons**
-* **4 output neurons** – corresponding to the four directional control decisions:
-
-  * ⬆️ accelerate
-  * ⬇️ brake
-  * ⬅️ steer left
-  * ➡️ steer right
-
-The full network is **visualized on screen in real-time**, so you can observe the live activations and structure as the learning progresses.
+* Pure JavaScript implementation — no external ML dependencies
+* Raycasting-based collision detection
+* Genetic mutation for evolutionary learning
+* Save & restore networks via browser storage
+* Fully client-side with live visualization
 
 ---
 
-## 📎 Acknowledgements
+## 📫 Connect & Collaborate
 
-This project is heavily inspired by the excellent [Self-Driving Car series by Rad Maricescu-Istodor](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY).
+Feel free to reach out if you want to discuss this project or explore similar ML demos!
 
 ---
+
+## 🙏 Acknowledgements
+
+Thanks to [Rad Maricescu-Istodor](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY) for the inspiring course that laid the foundation for this project.
 
