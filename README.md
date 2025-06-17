@@ -1,7 +1,3 @@
-Here’s a polished, unified README version keeping your screenshot and original info, but matching the style and tone from your bio and landing page:
-
----
-
 # Self-Driving Car Project 🚗🧠
 
 ![Screenshot](images/screenshot_app.png)
@@ -67,8 +63,5 @@ Click the **💾 icon** to save the best-performing car’s neural network (`bes
 
 Special thanks to [Radu Mariescu-Istodor](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY) for the inspiring course that sparked this project.
 
----
-
-If you want me to help unify more README files or polish the wording, just send them over!
 
 
