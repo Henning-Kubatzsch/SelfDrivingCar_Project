@@ -8,7 +8,7 @@ A browser-based machine learning simulation demonstrating evolutionary neural ne
 
 This project explores evolutionary training of neural networks to control self-driving cars navigating a road without collisions. Running fully in-browser, it requires no backend or setup, making it a lightweight and accessible demo of ML concepts in action.
 
-Inspired by Rad Maricescu-Istodor’s excellent [Self-Driving Car course](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY), it combines raycasting sensors, genetic mutation, and live neural network visualization.
+Inspired by Radu Maricescu-Istodor’s excellent [Self-Driving Car course](https://www.youtube.com/watch?v=NkI9ia2cLhc&list=PLB0Tybl0UNfYoJE7ZwsBQoDIG4YN9ptyY), it combines raycasting sensors, genetic mutation, and live neural network visualization.
 
 ---
 
